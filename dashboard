@@ -1,0 +1,247 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard - Sistema de Stock{% endblock %}
+
+{% block content %}
+<div class="container mt-5 pt-5">
+
+    <h1 class="mb-4">Bienvenido {{ user.first_name }}</h1>
+
+    <!-- Alerta de productos agotados -->
+    <div id="alertaStock" class="alert alert-danger d-none">
+        <!-- El contenido se genera con JS -->
+    </div>
+
+    <!-- Tarjetas de resumen -->
+    <div class="row text-center mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>Total productos</h5>
+                    <h2>150</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>Stock bajo</h5>
+                    <h2>2</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>Categorías</h5>
+                    <h2>12</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>Ventas hoy</h5>
+                    <h2>23</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón para agregar producto -->
+    <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#agregarProductoModal">
+        Agregar Producto
+    </button>
+
+    <!-- Tabla de productos -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            Productos
+        </div>
+        <div class="card-body">
+            <table class="table table-striped" id="tablaProductos">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Stock</th>
+                        <th>Stock Mínimo</th>
+                        <th>Precio</th>
+                        <th>Proveedor</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Mesa de Roble</td>
+                        <td>Mesa</td>
+                        <td>50</td>
+                        <td>10</td>
+                        <td>1500.00</td>
+                        <td>Pino Raw</td>
+                    </tr>
+                    <tr>
+                        <td>Sillas de Madera Nordica</td>
+                        <td>Silla</td>
+                        <td>30</td>
+                        <td>5</td>
+                        <td>450000.00</td>
+                        <td>Proveedora DecoSur</td>
+                    </tr>
+                    <tr>
+                        <td>Placard de Melamina</td>
+                        <td>Placard</td>
+                        <td>100</td>
+                        <td>20</td>
+                        <td>60000.00</td>
+                        <td>Distribuidora Hogar Ideal</td>
+                    </tr>
+                    <tr>
+                        <td>Mesa Ratona</td>
+                        <td>Mesa</td>
+                        <td>40</td>
+                        <td>8</td>
+                        <td>850000.00</td>
+                        <td>Proveedora DecoSur</td>
+                    </tr>
+                    <tr>
+                        <td>Mesa Extensible</td>
+                        <td>Mesa</td>
+                        <td>25</td>
+                        <td>5</td>
+                        <td>220000.00</td>
+                        <td>Distribuidora Hogar Ideal</td>
+                    </tr>
+                    <tr>
+                        <td>Silla Tapizada Gris</td>
+                        <td>Silla</td>
+                        <td>60</td>
+                        <td>10</td>
+                        <td>48000.00</td>
+                        <td>Pino Raw</td>
+                    </tr>
+                    <tr>
+                        <td>Silla Plegable Blanca</td>
+                        <td>Silla</td>
+                        <td>80</td>
+                        <td>15</td>
+                        <td>32000.00</td>
+                        <td>Distribuidora Hogar Ideal</td>
+                    </tr>
+                    <tr>
+                        <td>Placard 2 Puertas</td>
+                        <td>Placard</td>
+                        <td>45</td>
+                        <td>10</td>
+                        <td>750000.00</td>
+                        <td>Proveedora DecoSur</td>
+                    </tr>
+                    <tr>
+                        <td>Placard Espejado</td>
+                        <td>Estantería</td>
+                        <td>20</td>
+                        <td>5</td>
+                        <td>120000.00</td>
+                        <td>Pino Raw</td>
+                    </tr>
+                    <tr>
+                        <td>Mesa de Comedor</td>
+                        <td>Mesa</td>
+                        <td>35</td>
+                        <td>7</td>
+                        <td>950000.00</td>
+                        <td>Pino Raw</td>
+                    </tr>
+                    <tr>
+                        <td>Silla de Oficina</td>
+                        <td>Silla</td>
+                        <td>50</td>
+                        <td>10</td>
+                        <td>56000.00</td>
+                        <td>Proveedora DecoSur</td>
+                    </tr>
+                    <tr>
+                        <td>Placard Infantil</td>
+                        <td>Estantería</td>
+                        <td>30</td>
+                        <td>6</td>
+                        <td>680000,00</td>
+                        <td>Distribuidora Hogar Ideal</td>
+                    </tr>
+                    <tr>
+                        <td>Mesa de Luz</td>
+                        <td>Mesas</td>
+                        <td>70</td>
+                        <td>12</td>
+                        <td>450000.00</td>
+                        <td>Proveedora DecoSur</td>
+                    </tr>a
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para agregar producto -->
+<div class="modal fade" id="agregarProductoModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="#">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Agregar Producto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre del Producto</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="categoria" class="form-label">Categoría</label>
+                        <input type="text" class="form-control" id="categoria" name="categoria" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="stock" class="form-label">Stock</label>
+                        <input type="number" class="form-control" id="stock" name="stock" min="0" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Agregar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Script para alertar productos con stock 0 -->
+<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+    const tabla = document.getElementById('tablaProductos');
+    const alerta = document.getElementById('alertaStock');
+    let productosAgotados = [];
+
+    // Recorrer todas las filas de la tabla
+    tabla.querySelectorAll('tbody tr').forEach(fila => {
+        const stock = parseInt(fila.cells[2].textContent);
+        if (stock === 0) {
+            productosAgotados.push(fila.cells[0].textContent);
+            fila.classList.add('table-danger'); // pinta la fila de rojo
+        }
+    });
+
+    if (productosAgotados.length > 0) {
+        alerta.textContent = "Productos agotados: " + productosAgotados.join(", ");
+        alerta.classList.remove('d-none');
+    }
+});
+
+contexto = {
+    'provincias': provincias
+}
+</script>
+
+{% endblock %}
