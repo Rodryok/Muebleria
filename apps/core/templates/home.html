@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% block title %}MuebleStock - Inicio{% endblock %}
+
+{% block extra_css %}
+<style>
+    html {
+        scroll-behavior: smooth;
+    }
+
+    section {
+        min-height: 80vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 50px 20px;
+    }
+
+    /* Sección banner de búsqueda */
+    #busqueda-muebles {
+        background: url('https://via.placeholder.com/1920x600') no-repeat center center;
+        background-size: cover;
+        color: white;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    #busqueda-muebles h1 {
+        text-shadow: 2px 2px 5px rgba(0,0,0,0.6);
+    }
+
+    /* Card del formulario */
+    #busqueda-muebles .card {
+        background-color: rgba(255,255,255,0.9);
+        padding: 30px;
+        max-width: 700px;
+        width: 100%;
+    }
+    
+    .card-body {
+    max-height: 400px;
+    overflow-y: auto;
+    }
+
+    /* Sección contacto */
+    #contacto {
+        background-color: #f8f9fa;
+        flex-direction: column;
+    }
+
+    /* Botón flotante */
+    #btn-top {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+
+    #btn-top:hover {
+        text-decoration: none;
+    
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">MuebleStock</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMuebles" aria-controls="navbarMuebles" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarMuebles">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="#busqueda-muebles">Buscar Muebles</a></li>
+                <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+            </ul>
+            <div class="d-flex">
+                <a href="{% url 'login' %}" class="btn btn-outline-light">
+                    <i class="bi bi-box-arrow-in-right"></i> Iniciar sesión
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Sección 1: Banner + Formulario de búsqueda -->
+<section id="busqueda-muebles">
+        <h1 class="btn btn-success text-white px-4 py-2 rounded-pill fs-2">Buscar Producto</h1>
+        <div class="card mx-auto">
+            <form method="get" action="{% url 'home' %}">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-white border-end-0">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input 
+                        type="text" 
+                        class="form-control border-start-0" 
+                        id="busqueda" 
+                        name="q" 
+                        value="{{ query }}" 
+                        placeholder="Buscar muebles... (ej: mesa, silla, sofá)" 
+                        aria-label="Buscar muebles">
+
+                    <select class="form-select" name="categoria" aria-label="Filtrar por categoría">
+                        <option value="">Todas las categorías</option>
+                        {% for cat in categorias %}
+                            <option value="{{ cat.id }}" {% if cat.id|stringformat:"s" == categoria_id %}selected{% endif %}>
+                                {{ cat.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <button class="btn btn-primary" type="submit">Buscar</button>
+                </div>
+            </form>
+        </div>
+    </section>
+<div class="container py-5">
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        {% for item in items %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.nombre }}</h5>
+                    <p class="card-text">
+                        <strong>Precio:</strong> ${{ item.precio }}<br>
+                        <strong>Categoría:</strong> {{ item.categoria.nombre }}<br>
+                        <strong>Proveedor:</strong> {{ item.proveedor.nombre }}<br>
+                        <strong>Stock:</strong> {{ item.stock }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<!-- Sección 2: Contacto + Mapa -->
+<section id="contacto">
+    <div class="container">
+        <div class="row">
+            <!-- Formulario -->
+            <div class="col-md-6 mb-4">
+                <h2>Contáctanos</h2>
+                <form method="post" action="#">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Correo</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="mensaje" class="form-label">Mensaje</label>
+                        <textarea class="form-control" id="mensaje" name="mensaje" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                </form>
+            </div>
+            <!-- Mapa -->
+            <div class="col-md-6">
+                <h2>Ubicación</h2>
+                <div class="ratio ratio-16x9">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3040.2552839470626!2d-65.0929846!3d-43.2940032!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xbe01571e488a5ac9%3A0xa1390679f9cab82!2sSHOPPING%20LA%20CAPITAL%20S.R.L.!5e0!3m2!1ses-419!2sar!4v1694100000000!5m2!1ses-419!2sar" 
+                        style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Botón volver arriba -->
+<a id="btn-top" href="#busqueda-muebles" class="btn btn-danger btn-lg rounded-circle">
+    <i class="bi bi-arrow-up"></i>
+</a>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Scroll suave para links del navbar
+    document.querySelectorAll('a.nav-link').forEach(anchor => {
+        anchor.addEventListener('click', function(e){
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            target.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+</script>
+{% endblock %}

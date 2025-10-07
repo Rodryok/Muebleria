@@ -1,0 +1,199 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard - Sistema de Stock{% endblock %}
+
+{% block content %}
+<style>
+    body {
+    background-image: url("{% static 'imagenes/Dashboard (2).png' %}");
+    background-size: cover;         /* Ajusta sin distorsionar */
+    background-position: center;    /* Centra la imagen */
+    background-repeat: no-repeat;   /* No se repite */
+    background-attachment: fixed;   /* Fija la imagen al fondo */
+}
+</style>
+<div class="container mt-5 pt-5">
+    <h1 class="btn btn-success text-white px-4 py-2 rounded-pill fs-2"> Bienvenido {{ user.first_name }}</h1>
+    <section id="busqueda-muebles">
+        <h1 class="btn btn-success text-white px-4 py-2 rounded-pill fs-2">Buscar Producto</h1>
+        <div class="card mx-auto">
+            <form method="get" action="{% url 'dashboard' %}">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-white border-end-0">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input 
+                        type="text" 
+                        class="form-control border-start-0" 
+                        id="busqueda" 
+                        name="q" 
+                        value="{{ query }}" 
+                        placeholder="Buscar muebles... (ej: mesa, silla, sofá)" 
+                        aria-label="Buscar muebles">
+
+                    <select class="form-select" name="categoria" aria-label="Filtrar por categoría">
+                        <option value="">Todas las categorías</option>
+                        {% for cat in categorias %}
+                            <option value="{{ cat.id }}" {% if cat.id|stringformat:"s" == categoria_id %}selected{% endif %}>
+                                {{ cat.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <button class="btn btn-primary" type="submit">Buscar</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Alerta de productos agotados -->
+    <div id="alertaStock" class="alert alert-danger d-none">
+        <!-- El contenido se genera con JS -->
+    </div>
+
+    <!-- Tarjetas de resumen -->
+   <div class="row text-center mb-4">
+    <div class="col-md-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5>Total productos</h5>
+                <h2>{{ total_productos }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5>Stock bajo</h5>
+                <h2>{{ stock_bajo }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5>Categorías</h5>
+                <h2>{{ total_categorias }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5>Ventas hoy</h5>
+                <h2>{{ ventas_hoy }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <!-- Botón para agregar producto -->
+    <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#agregarProductoModal">
+        Agregar Producto
+    </button>
+
+    <!-- Tabla de productos -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            Productos
+        </div>
+        <div class="card-body">
+            <table class="table table-striped" id="tablaProductos">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Stock</th>
+                        <th>Stock Mínimo</th>
+                        <th>Precio</th>
+                        <th>Proveedor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for producto in productos %}
+                    <tr {% if producto.stock == 0 %}class="table-danger"{% endif %}>
+                        <td>{{ producto.id }}</td>
+                        <td>{{ producto.nombre }}</td>
+                        <td>{{ producto.categoria.nombre }}</td>
+                        <td>{{ producto.stock }}</td>
+                        <td>{{ producto.stock_minimo }}</td>
+                        <td>{{ producto.precio }}</td>
+                        <td>{{ producto.proveedor.nombre }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center">No hay productos registrados.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal para agregar producto -->
+<div class="modal fade" id="agregarProductoModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="#">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Agregar Producto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre del Producto</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="categoria" class="form-label">Categoría</label>
+                        <input type="text" class="form-control" id="categoria" name="categoria" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="stock" class="form-label">Stock</label>
+                        <input type="number" class="form-control" id="stock" name="stock" min="0" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Agregar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Script para alertar productos con stock 0 -->
+<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+    const tabla = document.getElementById('tablaProductos');
+    const alerta = document.getElementById('alertaStock');
+    let productosAgotados = [];
+
+    // Recorrer todas las filas de la tabla
+    tabla.querySelectorAll('tbody tr').forEach(fila => {
+        const stock = parseInt(fila.cells[2].textContent);
+        if (stock === 0) {
+            productosAgotados.push(fila.cells[0].textContent);
+            fila.classList.add('table-danger'); // pinta la fila de rojo
+        }
+    });
+
+    if (productosAgotados.length > 0) {
+        alerta.textContent = "Productos agotados: " + productosAgotados.join(", ");
+        alerta.classList.remove('d-none');
+    }
+});
+
+contexto = {
+    'provincias': provincias
+}
+</script>
+
+{% endblock %}
