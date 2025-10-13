@@ -1,0 +1,44 @@
+<div> 
+    <!--Boton para registrar compra-->
+    <button id="mostrar-formulario">Registrar nueva compra</button>
+
+    <!--contenedor de formulario escondido-->
+    <div id="formulario-compra" style="display:none; margin-top:20px;">
+        <form id="compra-form" method="POST">
+        {% csrf_token %}
+        <!--carga el formulario-->
+        {{ form.as_p }}
+        <button type="submit">Confirmar compra</button>
+        </form>
+    </div>
+
+    <div id="resultado" style="margin-top:20px;"></div>
+    <script>
+        // Mostrar el formulario al hacer clic
+        document.getElementById("mostrar-formulario").onclick = function() {
+        document.getElementById("formulario-compra").style.display = "block";
+        };
+
+        // Enviar el formulario vía AJAX
+        document.getElementById("compra-form").onsubmit = function(e) {
+        e.preventDefault();
+        fetch("{% url 'registrar_compra' %}", {
+            method: "POST",
+            headers: {
+            "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+            "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams(new FormData(this))
+        })
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("resultado").innerText = data.mensaje || data.error;
+            if (data.mensaje) {
+            document.getElementById("formulario-compra").style.display = "none";
+            document.getElementById("compra-form").reset();
+            }
+        });
+        };
+    </script>
+</div>
+
