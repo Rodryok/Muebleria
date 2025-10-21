@@ -1,0 +1,105 @@
+{% load static %} 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">Mueblería Stock</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavLanding" aria-controls="navbarNavLanding" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNavLanding">
+                    <div class="d-flex ms-auto">
+                        {% if user.is_authenticated %}
+                        <div class="dropdown">
+                            <button class="btn btn-outline-light dropdown-toggle" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle"></i> {{ user.username }}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end bg-light">
+                                <li><a class="dropdown-item text-dark" href="{% url 'logout' %}">
+                                    <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+                                </a></li>
+                            </ul>
+                        </div>
+                        {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-outline-light">
+                            <i class="bi bi-box-arrow-in-right"></i> Iniciar sesión
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="">
+        <div class="card border-0 shadow rounded-4">
+            <div class="card-header bg-primary text-white text-center">
+                <h5 class="mb-0 w-100">{% block header %}Stock{% endblock %}</h5>
+            </div>
+                    {% block content %}{% endblock %}
+            {% block outside_card %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+<!-- <footer class="text-center mt-2 mb-2">
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+                <h2>Contáctanos</h2>
+                <form class="form-base" method="post" action="#">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Correo</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="mensaje" class="form-label">Mensaje</label>
+                        <textarea class="form-control" id="mensaje" name="mensaje" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                </form>
+        </div>
+        <div class="col-md-6 mb-2 d-flex justify-content-center">
+                <H2>Ubicación</H2>
+                <div class="ratio ratio-16x9" style="max-width: 350px; width: 100%;">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3040.2552839470626!2d-65.0929846!3d-43.2940032!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xbe01571e488a5ac9%3A0xa1390679f9cab82!2sSHOPPING%20LA%20CAPITAL%20S.R.L.!5e0!3m2!1ses-419!2sar!4v1694100000000!5m2!1ses-419!2sar" 
+                        style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+        </div>
+       <div class="row mt-4">
+    Información de contacto
+    <div class="col-md-6 mb-2">
+        <h2 class="fw-bold">Mueblería Rawson</h2>
+        <p><i class="bi bi-geo-alt-fill"></i> Dirección: Av. Rawson 1234, San Juan, Argentina</p>
+        <p><i class="bi bi-telephone-fill"></i> Teléfono: +54 264 555-1234</p>
+        <p><i class="bi bi-envelope-fill"></i> Email: contacto@rawsonmuebles.com</p>
+        <p><i class="bi bi-clock-fill"></i> Horarios: Lunes a Sábado - 9:00 a 20:00 hs</p>
+    </div>
+</div>
+    <small class="text-muted">&copy; 2024 Mueblería Stock. Todos los derechos reservados.</small>
+
+</footer> -->
+</html>

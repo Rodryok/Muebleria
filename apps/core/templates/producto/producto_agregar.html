@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Agregar Producto{% endblock %}
+{% block header %}Agregar Producto{% endblock %}
+
+{% block content %}
+<form class="form-base" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }} <a href="{% url 'crear_categoria' %}" class="btn btn-sm btn-outline-success">Crear categorías</a>
+  <div class="d-flex justify-content-end gap-2 mt-3">
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Cancelar</a>
+  </div>
+</form>
+{% endblock %}

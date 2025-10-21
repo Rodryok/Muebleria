@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block header_title %} Bienvenido {{ user.first_name }} {% endblock %}
+
+{% block form_card %}{% endblock %}  {# Evita que se aplique el card del formulario #}
+
+{% block nav_items %}
+  <li class="nav-item"><a class="nav-link" href="#busqueda-muebles">Buscar Muebles</a></li>
+{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    background-image: url("{% static 'imagenes/Dashboard (2).png' %}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+</style>
+<div class="container mt-5 pt-5">
+  {% if messages %}
+  <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+    {% for message in messages %}
+      {{ message }}
+    {% endfor %}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+  </div>
+  {% endif %}
+
+  <!-- Buscador -->
+  <section id="busqueda-muebles">
+    <div class="card mx-auto">
+      <form method="get" action="{% url 'dashboard' %}">
+        <div class="input-group input-group-lg">
+          <span class="input-group-text bg-white border-end-0">
+            <i class="bi bi-search"></i>
+          </span>
+          <input type="text" class="form-control border-start-0" name="q" value="{{ query }}" placeholder="Buscar muebles...">
+          <select class="form-select" name="categoria">
+            <option value="">Todas las categorías</option>
+            {% for cat in categorias %}
+              <option value="{{ cat.id }}" {% if cat.id|stringformat:"s" == categoria_id %}selected{% endif %}>{{ cat.nombre }}</option>
+            {% endfor %}
+          </select>
+          <button class="btn btn-primary" type="submit">Buscar</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Botón agregar producto -->
+
+<div class="mb-4 text-center d-flex gap-3 mt-3 flex-wrap justify-content-center">
+  <!-- Agregar producto -->
+  <form method="get" action="{% url 'producto_agregar' %}">
+    <button type="submit" class="btn btn-primary">Agregar producto</button>
+  </form>
+
+  <!-- Crear remito -->
+          <form method="get" action="{% url 'crear_remito' %}">
+            <button type="submit" class="btn btn-outline-primary">Crear remito</button>
+          </form>
+          <form method="get" action="{% url 'crear_cliente' %}">
+            <button type="submit" class="btn btn-outline-success w-100">Agregar Cliente</button>
+          </form>
+          <form method="get" action="{% url 'crear_proveedor' %}">
+            <button type="submit" class="btn btn-outline-info w-100">Agregar Proveedor</button>
+          </form>
+          <form method="get" action="{% url 'crear_categoria' %}">
+            <button type="submit" class="btn btn-outline-warning w-100">Agregar Categoría</button>
+          </form>
+  </div>
+</div>
+
+
+  <!-- Tabla de productos -->
+<div class="card shadow-sm mt-5">
+    <div class="card-header bg-primary text-white">Productos</div>
+    <div class="card-body">
+      <table class="table table-striped" id="tablaProductos">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Producto</th>
+            <th>Categoría</th>
+            <th>Stock</th>
+            <th>Precio</th>
+            <th>Proveedor</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for producto in productos %}
+          <tr {% if producto.stock == 0 %}class="table-danger"{% endif %}>
+            <td>{{ producto.id }}</td>
+            <td>{{ producto.nombre }}</td>
+            <td>{{ producto.categoria.nombre }}</td>
+            <td>{{ producto.stock }}</td>
+            <td>${{ producto.precio }}</td>
+            <td>{{ producto.proveedor.nombre }}</td>
+            <td>
+              <form method="get" action="{% url 'producto_editar' producto.id %}" style="display:inline;">
+                <button type="submit" class="btn btn-outline-success btn-sm">Editar</button>
+              </form>
+              <form method="post" action="{% url 'producto_eliminar' producto.id %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger btn-sm"
+                        onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?');">
+                  Eliminar
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="8" class="text-center">No hay productos registrados.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Tabla Proveedores -->
+<div class="card shadow-sm mt-5">
+    <div class="card-header bg-primary text-white text-center">Proveedores</div>
+    <div class="card-body p-2">
+      <table class="table table-striped text-center mb-0" id="tablaProveedores" style="table-layout: fixed;">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Teléfono</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for proveedor in proveedores %}
+          <tr>
+            <td>{{ proveedor.id }}</td>
+            <td>{{ proveedor.nombre }}</td>
+            <td>{{ proveedor.telefono }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Tabla Categorías -->
+<div class="card shadow-sm mt-5">
+    <div class="card-header bg-primary text-white text-center">Categorías</div>
+    <div class="card-body p-2">
+      <table class="table table-striped text-center mb-0" id="tablaCategorias" style="table-layout: fixed;">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for categoria in categorias %}
+          <tr>
+            <td>{{ categoria.id }}</td>
+            <td>{{ categoria.nombre }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ver detalles de los remitos -->
+
+<!-- Tabla de Remitos -->
+
+<div class="container mt-4">
+    <h2>Dashboard de Remitos</h2>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Importe Total</th>
+                <th>Ver</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for remito in remitos %}
+            <tr>
+                <td>{{ remito.id }}</td>
+                <td>{{ remito.cliente.nombre }}</td>
+                <td>{{ remito.fecha }}</td>
+                <td>${{ remito.importe_total }}</td>
+                <td><a href="{% url 'ver_Remito' remito.id %}" class="btn btn-sm btn-info">Ver</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

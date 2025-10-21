@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Crear Remito{% endblock %}
+{% block header %}Nuevo Remito{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Nuevo Remito</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ remito_form.cliente.label_tag }}
+            {{ remito_form.cliente }}
+        </div>
+        <h4>Detalles</h4>
+        {{ formset.management_form }}
+        {% for form in formset %}
+            <div class="border p-3 mb-2">
+                <div class="mb-2">{{ form.producto.label_tag }} {{ form.producto }}</div>
+                <div class="mb-2">{{ form.cantidad.label_tag }} {{ form.cantidad }}</div>
+                <div class="mb-2">{{ form.descripcion.label_tag }} {{ form.descripcion }}</div>
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Crear Remito</button>
+    </form>
+</div>
+{% endblock %}

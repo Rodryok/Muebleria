@@ -1,0 +1,16 @@
+# Entorno virtual
+pruebaweb/
+entorno.gitignore
+
+# Archivos compilados de Python
+*.pyc
+__pycache__/
+
+# Base de datos SQLite
+*.sqlite3
+
+# Archivos de logs
+*.log
+
+# Archivos de entorno
+.env
